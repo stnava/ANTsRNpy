@@ -50,6 +50,6 @@ toimage(array[:,:,2]).show()
 
 So, from above, we can see that the necessary index reordering for 2D and 3D is:
 
-    * 2D: if R is  m * n  then the data in python is  n * m
+  * 2D: if R is  m * n  then the data in python is  n * m
 
-    * 3D: if R is  m * n * o  then the data in python is o * n * m
+  * 3D: if R is  m * n * o  then the data in python is o * n * m
