@@ -2,3 +2,5 @@
 
 export(readNumpyToANTsImage)
 export(writeANTsImageToNumpy)
+import(ANTsR)
+import(RcppCNPy)

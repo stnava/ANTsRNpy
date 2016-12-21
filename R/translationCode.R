@@ -8,6 +8,7 @@
 #' @param fn output filename (probably a .npy extension)
 #' @return NULL
 #' @author Avants BB
+#' @import ANTsR RcppCNPy
 #' @examples
 #'
 #' img = ANTsR::antsImageRead( ANTsR::getANTsRData( "r16" ) )
@@ -73,6 +74,7 @@ writeANTsImageToNumpy <- function( img, fn  ) {
 #' @param img reference antsImage in which to put numpy data
 #' @return antsImage is output
 #' @author Avants BB
+#' @import ANTsR RcppCNPy
 #' @examples
 #'
 #' img = ANTsR::antsImageRead( ANTsR::getANTsRData( "r16" ) )
