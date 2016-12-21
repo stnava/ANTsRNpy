@@ -46,6 +46,14 @@
 #' # from scipy.misc import toimage
 #' # toimage(data).show()
 #'
+#' # now a multi-channel example
+#' i1 = ANTsR::makeImage( c( 5, 6, 7 ), rnorm( 5*6*7) )
+#' i2 = ANTsR::makeImage( c( 5, 6, 7 ), rnorm( 5*6*7) )
+#' img = mergeChannels( list( i1, i2 ) )
+#' writeANTsImageToNumpy( img, ofn )
+#' # now to read this in python, follow the examples above but each channel
+#' # corresponds to each row in the numpy matrix
+#'
 #' @export writeANTsImageToNumpy
 writeANTsImageToNumpy <- function( img, fn  ) {
   idim = img@dimension
