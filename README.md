@@ -54,5 +54,5 @@ So, from above, we can see that the necessary index reordering for 2D and 3D is:
 
   * 3D: if `R` is  `m * n * o`  then the `numpy` data in `python` is `o * n * m`
 
-The examples illustrate this and the differences induced by the 1-based (`R`)
-vs. 0-based indexing of `python`.
+The examples illustrate this and the differences induced by the 1-based indexing
+in `R` vs. 0-based indexing in `python`.
