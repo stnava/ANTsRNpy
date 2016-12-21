@@ -9,3 +9,6 @@ Description: More details about what the package does. See
         <http://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file>
         for details on how to write this part.
 License: Apache License 2.0
+Suggests: RcppCNPy, ANTsR
+Additional_repositories: https://github.com/stnava/ANTsR.git
+RoxygenNote: 5.0.1
