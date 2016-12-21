@@ -27,6 +27,17 @@ img = ANTsR::makeImage( c( 5, 6, 7 ) )
 writeANTsImageToNumpy( img, ofn )
 img3 = readNumpyToANTsImage( ofn, img )
 
+img = antsImageRead( getANTsRData( "mni" ) )
+writeANTsImageToNumpy( img, ofn )
+img3 = readNumpyToANTsImage( ofn, img )
+# # in python
+# from PIL import Image
+# import numpy as np
+# from scipy.misc import toimage
+# data = np.load( ofn )
+# array = np.reshape( data, [ 182, 218, 182 ] )
+# toimage(array[:,111,:]).show()
+
 }
 \author{
 Avants BB

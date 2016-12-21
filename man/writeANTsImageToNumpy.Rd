@@ -13,8 +13,8 @@ writeANTsImageToNumpy(img, fn)
 }
 \description{
 Write antsImage type to numpy array.  This will produce a vector for a single
-channel image and a matrix for a multi-channel image.  We reorder the data
-such that the ordering of indices matches across the two systems.
+channel image and a matrix for a multi-channel image.  We do not reorder the
+data to match R and numpy indexing.
 }
 \examples{
 

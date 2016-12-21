@@ -1,8 +1,8 @@
 #' writeANTsImageToNumpy
 #'
 #' Write antsImage type to numpy array.  This will produce a vector for a single
-#' channel image and a matrix for a multi-channel image.  We reorder the data
-#' such that the ordering of indices matches across the two systems.
+#' channel image and a matrix for a multi-channel image.  We do not reorder the
+#' data to match R and numpy indexing.
 #'
 #' @param img input antsImage
 #' @param fn output filename (probably a .npy extension)
@@ -85,9 +85,35 @@ writeANTsImageToNumpy <- function( img, fn  ) {
 #' writeANTsImageToNumpy( img, ofn )
 #' img3 = readNumpyToANTsImage( ofn, img )
 #'
+#' img = antsImageRead( getANTsRData( "mni" ) )
+#' writeANTsImageToNumpy( img, ofn )
+#' img3 = readNumpyToANTsImage( ofn, img )
+#' # # in python
+#' # from PIL import Image
+#' # import numpy as np
+#' # from scipy.misc import toimage
+#' # data = np.load( ofn )
+#' # array = np.reshape( data, [ 182, 218, 182 ] )
+#' # toimage(array[:,111,:]).show()
+#'
 #' @export readNumpyToANTsImage
 readNumpyToANTsImage <- function( fn, img ) {
+  if ( img@components == 1 ) msk = img * 0 + 1
+  if ( img@components > 1 ) {
+    msk = splitChannels( img )[[ 1 ]]  * 0 + 1
+    }
   fmat <- RcppCNPy::npyLoad( fn )
-  print( dim( fmat ) )
-  return( img )
+  if ( class( fmat ) == "numeric" ) {
+    msk[ msk == 1 ] = fmat
+    return( msk )
+  }
+  if ( class( fmat ) == "matrix" ) {
+    nchannel = nrow( fmat )
+    ilist = list()
+    for ( k in 1:nchannel ) {
+      msk[ msk == 1 ] = fmat[k,]
+      ilist[[ k ]] = antsImageClone( msk )
+    }
+    return( mergeChannels( ilist ) )
+  } else stop("cannot identify this numpy type")
 }
