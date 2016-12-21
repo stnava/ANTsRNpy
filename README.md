@@ -47,3 +47,9 @@ array[ 3, 1, 4 ] # index in python
 # so the python indices are in reverse order and minus one compared to R
 toimage(array[:,:,2]).show()
 ```
+
+So, from above, we can see that the necessary index reordering for 2D and 3D is:
+
+    * 2D: if R is  m * n  then the data in python is  n * m
+
+    * 3D: if R is  m * n * o  then the data in python is o * n * m
