@@ -3,6 +3,14 @@
 Write a single or multi-channel antsImage to a numpy vector or matrix.  Read a
 numpy vector or matrix back into a single or multi-channel antsImage.
 
+Package dependencies: `ANTSR, RcppCNPy`
+
+Installation:
+
+```
+devtools::install_github("stnava/ANTsRNpy")
+```
+
 See the help for the two functions:  
 
 ```
