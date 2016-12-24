@@ -56,3 +56,12 @@ So, from above, we can see that the necessary index reordering for 2D and 3D is:
 
 The examples illustrate this and the differences induced by the 1-based indexing
 in `R` vs. 0-based indexing in `python`.
+
+**why do we need this tool?** we want to create multichannel image ground truth
+data in `R` and read into `python`.  however, `R` currently lacks the ability to
+write `numpy` data with dimensionality greater than 2 (i.e. matrices are ok but
+multi-dimensional arrays cannot be written).  this is due to limits in the
+current implementation of `RcppCNPy` which may, in the future, be overcome.
+In the meantime, the current approach allows us to write either single or multi
+channel images into numpy vectors and matrices.  we then aggregate and pickle
+the numpy data in python to create sharable training and testing datasets.
