@@ -41,7 +41,7 @@ simulateSphereData <- function( referenceImage,
   pts[1, ] = antsTransformIndexToPhysicalPoint( referenceImage, ctr ) +
         rnorm( mydim, positionNoiseLevel[1], positionNoiseLevel[2] )
   ptsi = makePointsImage( pts, msk, radius = baserad )
-  ptsi = ptsi + makePointsImage( pts, msk, radius = baserad + plusrad )
+  ptsi = ptsi + makePointsImage( pts, msk, radius = plusrad )
   labels$labels = ptsi[ msk == 1 ]
   mynoise = rnorm( sum( msk == 1 ), noiseLevel[1], noiseLevel[2] )
   mycom = getCenterOfMass( ptsi )
