@@ -64,12 +64,12 @@ writeANTsImageToNumpy <- function( img, fn  ) {
     if ( idim == 2 ) {
       msk = img * 0 + 1
       vec = img[ msk == 1 ]
-      RcppCNPy::npySave( fn, vec )
+      temp = capture.output(  RcppCNPy::npySave( fn, vec ) )
     }
     if ( idim == 3 ) {
       msk = img * 0 + 1
       vec = img[ msk == 1 ]
-      RcppCNPy::npySave( fn, vec )
+      temp = capture.output(  RcppCNPy::npySave( fn, vec ) )
     }
   }
   if ( img@components > 1 ) {
@@ -88,7 +88,7 @@ writeANTsImageToNumpy <- function( img, fn  ) {
       }
       ct = ct + 1
     }
-    RcppCNPy::npySave( fn, matout )
+    temp = capture.output(  RcppCNPy::npySave( fn, matout ) )
   }
   return( NULL )
 }
