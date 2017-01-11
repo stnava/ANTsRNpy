@@ -64,6 +64,7 @@ simulateSphereData <- function( referenceImage,
 #' @param radius a scalar defining the patch size
 #' @param npatches number of patches to regular sample from the image
 #' @param groundTruth single scalar or vector (size of mask) with groundTruth
+#' @param randomize randomize the location of the patch sampling
 #' @return list containing the image patches and separately the data frame
 #' holding the patch coordinate and the ground truth.
 #' @author Avants BB
@@ -80,7 +81,8 @@ imageToPatches <- function(
   mask = NA,
   radius = 5,
   npatches = NA,
-  groundTruth = 0 )
+  groundTruth = 0,
+  randomize = FALSE )
 {
 mydim = image@dimension
 gtIsVector = TRUE
@@ -93,6 +95,7 @@ nmat$values[  is.na( nmat$values )  ] = mean( nmat$values , na.rm = TRUE )
 patches = list( )
 if ( is.na( npatches ) ) npatches = ncol( nmat$values )
 voxes = seq( from = 1, to = ncol( nmat$values ), by = floor(ncol( nmat$values )/npatches ) )
+if ( randomize ) voxes = sample(  1:ncol( nmat$values ), npatches )
 if ( length( voxes ) > npatches ) voxes = voxes[ 1:npatches ]
 mydf = data.frame(  matrix( nrow = npatches, ncol = mydim + 3 ) )
 colnames( mydf ) = c( "index", "value", c("x","y","z","t")[1:mydim], 'groundTruth' )

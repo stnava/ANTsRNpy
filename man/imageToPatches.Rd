@@ -5,7 +5,7 @@
 \title{imageToPatches}
 \usage{
 imageToPatches(image, mask = NA, radius = 5, npatches = NA,
-  groundTruth = 0)
+  groundTruth = 0, randomize = FALSE)
 }
 \arguments{
 \item{image}{a reference image defining the image space}
@@ -17,6 +17,8 @@ imageToPatches(image, mask = NA, radius = 5, npatches = NA,
 \item{npatches}{number of patches to regular sample from the image}
 
 \item{groundTruth}{single scalar or vector (size of mask) with groundTruth}
+
+\item{randomize}{randomize the location of the patch sampling}
 }
 \value{
 list containing the image patches and separately the data frame
