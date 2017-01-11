@@ -88,6 +88,7 @@ if ( length( groundTruth ) == 1 ) gtIsVector = FALSE
 if ( is.na( mask ) ) mask = image * 0 + 1
 nmat = getNeighborhoodInMask( image, mask, radius=rep( radius, mydim ),
   physical.coordinates=T, spatial.info=T, boundary.condition='image' )
+nmat$values[  is.na( nmat$values )  ] = mean( nmat$values , na.rm = TRUE )
 # write out each (or a sample of) patch along with its center coordinate and label
 patches = list( )
 if ( is.na( npatches ) ) npatches = ncol( nmat$values )
