@@ -95,7 +95,9 @@ nmat$values[  is.na( nmat$values )  ] = mean( nmat$values , na.rm = TRUE )
 patches = list( )
 if ( is.na( npatches ) ) npatches = ncol( nmat$values )
 voxes = seq( from = 1, to = ncol( nmat$values ), by = floor(ncol( nmat$values )/npatches ) )
-if ( randomize ) voxes = sample(  1:ncol( nmat$values ), npatches )
+if ( randomize ) {
+  voxes = sample(  1:ncol( nmat$values ), npatches )
+}
 if ( length( voxes ) > npatches ) voxes = voxes[ 1:npatches ]
 mydf = data.frame(  matrix( nrow = npatches, ncol = mydim + 3 ) )
 colnames( mydf ) = c( "index", "value", c("x","y","z","t")[1:mydim], 'groundTruth' )
@@ -107,7 +109,7 @@ for ( vox in voxes ) {
   loclabel = sim$groundTruth$labels[ vox ]
   locvalue = nmat$values[ centervalind, vox ]
   position = nmat$indices[vox,]
-  if ( gtIsVector ) locgt = groundTruth[ ct ]
+  if ( gtIsVector ) locgt = groundTruth[ vox ]
   mydf[ ct, ] = c( vox, locvalue, position, locgt )
   patches[[ ct ]] = rimg
   ct = ct + 1
