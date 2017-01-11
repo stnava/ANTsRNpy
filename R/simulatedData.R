@@ -50,3 +50,63 @@ simulateSphereData <- function( referenceImage,
   return( list( image = ptsi, mcimage = ptsm,
     groundTruth = labels, centerOfMass = mycom ) )
 }
+
+
+
+#' imageToPatches
+#'
+#' Convert an input image to a set of patches of given radius.  Return the local
+#' patch position for each patch. Optionally return the ground truth data
+#' associated with each patch, if available.
+#'
+#' @param image a reference image defining the image space
+#' @param mask mask for the image
+#' @param radius a scalar defining the patch size
+#' @param npatches number of patches to regular sample from the image
+#' @param groundTruth single scalar or vector (size of mask) with groundTruth
+#' @return list containing the image patches and separately the data frame
+#' holding the patch coordinate and the ground truth.
+#' @author Avants BB
+#' @import ANTsR RcppCNPy
+#' @examples
+#'
+#' rimg = makeImage( c(25,25) )
+#' sim = simulateSphereData( rimg, radius = c( 2, 3 )  )
+#' ptch = imageToPatches( sim$image, rimg * 0 + 1  )
+#'
+#' @export imageToPatches
+imageToPatches <- function(
+  image,
+  mask = NA,
+  radius = 5,
+  npatches = NA,
+  groundTruth = 0 )
+{
+mydim = image@dimension
+gtIsVector = TRUE
+if ( length( groundTruth ) == 1 ) gtIsVector = FALSE
+if ( is.na( mask ) ) mask = image * 0 + 1
+nmat = getNeighborhoodInMask( image, mask, radius=rep( radius, mydim ),
+  physical.coordinates=T, spatial.info=T, boundary.condition='image' )
+# write out each (or a sample of) patch along with its center coordinate and label
+patches = list( )
+if ( is.na( npatches ) ) npatches = ncol( nmat$values )
+voxes = seq( from = 1, to = ncol( nmat$values ), by = floor(ncol( nmat$values )/npatches ) )
+if ( length( voxes ) > npatches ) voxes = voxes[ 1:npatches ]
+mydf = data.frame(  matrix( nrow = npatches, ncol = mydim + 3 ) )
+colnames( mydf ) = c( "index", "value", c("x","y","z","t")[1:mydim], 'groundTruth' )
+centervalind = floor( nrow( nmat$values ) / 2 ) + 1
+ct = 1
+if ( !( gtIsVector ) ) locgt = groundTruth
+for ( vox in voxes ) {
+  rimg = makeImage( rep( radius*2 + 1, mydim ), nmat$values[,vox] )
+  loclabel = sim$groundTruth$labels[ vox ]
+  locvalue = nmat$values[ centervalind, vox ]
+  position = nmat$indices[vox,]
+  if ( gtIsVector ) locgt = groundTruth[ ct ]
+  mydf[ ct, ] = c( vox, locvalue, position, locgt )
+  patches[[ ct ]] = rimg
+  ct = ct + 1
+  }
+ return( list( patches = patches, patchSummary = mydf ) )
+}
