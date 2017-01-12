@@ -5,7 +5,7 @@
 \title{simulateSphereData}
 \usage{
 simulateSphereData(referenceImage, radius = c(5, 6), noiseLevel = c(0, 0.1),
-  positionNoiseLevel = c(0, 2))
+  positionNoiseLevel = c(0, 2), classByPosition = FALSE)
 }
 \arguments{
 \item{referenceImage}{a reference image defining the image space}
@@ -16,6 +16,8 @@ simulateSphereData(referenceImage, radius = c(5, 6), noiseLevel = c(0, 0.1),
 
 \item{positionNoiseLevel}{a two vector defining the noise level controlling
 how much the image moves randomly away from the center.}
+
+\item{classByPosition}{boolean altering label by the sign of position change}
 }
 \value{
 list containing the single channel image, the multi-channel image,
