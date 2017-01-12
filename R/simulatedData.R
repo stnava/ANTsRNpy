@@ -45,7 +45,7 @@ simulateSphereData <- function( referenceImage,
   ptsi = makePointsImage( pts, msk, radius = baserad )
   ptsi = ptsi + makePointsImage( pts, msk, radius = plusrad )
   labels$labels = ptsi[ msk == 1 ]
-  if ( classByPosition & pts[ 1, 1 ] < 0 )
+  if ( classByPosition &  ( pts[ 1, 1 ] < round( mydim[1]/2 ) ) )
     labels$labels = ptsi[ msk == 1 ] + max( labels$labels ) + 1
   mynoise = rnorm( sum( msk == 1 ), noiseLevel[1], noiseLevel[2] )
   mycom = getCenterOfMass( ptsi )
