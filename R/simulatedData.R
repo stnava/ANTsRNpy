@@ -90,6 +90,7 @@ imageToPatches <- function(
   randomize = FALSE )
 {
 mydim = image@dimension
+mycomp = image@components
 gtIsVector = TRUE
 if ( length( groundTruth ) == 1 ) gtIsVector = FALSE
 if ( is.na( mask ) ) mask = image * 0 + 1
@@ -111,9 +112,88 @@ ct = 1
 if ( !( gtIsVector ) ) locgt = groundTruth
 for ( vox in voxes ) {
   rimg = makeImage( rep( radius*2 + 1, mydim ), nmat$values[,vox] )
-  loclabel = sim$groundTruth$labels[ vox ]
   locvalue = nmat$values[ centervalind, vox ]
   position = nmat$indices[vox,]
+  if ( gtIsVector ) locgt = groundTruth[ vox ]
+  mydf[ ct, ] = c( vox, locvalue, position, locgt )
+  patches[[ ct ]] = rimg
+  ct = ct + 1
+  }
+ return( list( patches = patches, patchSummary = mydf ) )
+}
+
+
+
+
+#' multiChannelImageToPatches
+#'
+#' Convert an input image to a set of patches of given radius.  Return the local
+#' patch position for each patch. Optionally return the ground truth data
+#' associated with each patch, if available.
+#'
+#' @param image a reference image defining the image space
+#' @param mask mask for the image
+#' @param radius a scalar defining the patch size
+#' @param npatches number of patches to regular sample from the image
+#' @param groundTruth single scalar or vector (size of mask) with groundTruth
+#' @param randomize randomize the location of the patch sampling
+#' @return list containing the image patches and separately the data frame
+#' holding the patch coordinate and the ground truth.
+#' @author Avants BB
+#' @import ANTsR RcppCNPy
+#' @examples
+#'
+#' i1 = makeImage( c(25,25) )
+#' i2 = makeImage( c(25,25) )
+#' rimg = mergeChannels( list( i1, i2 ) )
+#' ptch = multiChannelImageToPatches( rimg, i1 * 0 + 1, npatches = 3  )
+#'
+#' @export multiChannelImageToPatches
+multiChannelImageToPatches <- function(
+  image,
+  mask = NA,
+  radius = 5,
+  npatches = NA,
+  groundTruth = 0,
+  randomize = FALSE )
+{
+mydim = image@dimension
+mycomp = image@components
+gtIsVector = TRUE
+if ( length( groundTruth ) == 1 ) gtIsVector = FALSE
+# get each component
+mychan = splitChannels( image )
+if ( is.na( mask ) ) mask = mychan[[ 1 ]] * 0 + 1
+if ( length( mychan ) != mycomp )
+  stop("Number of split channels does not equal number of components.")
+mymats = list( )
+for ( myk in 1:length( mychan ) ) {
+  nmat = getNeighborhoodInMask( mychan[[myk]], mask, radius=rep( radius, mydim ),
+    physical.coordinates=T, spatial.info=T, boundary.condition='image' )
+  nmat$values[  is.na( nmat$values )  ] = mean( nmat$values , na.rm = TRUE )
+  mymats[[ myk ]] = nmat
+  }
+# write out each (or a sample of) patch along with its center coordinate and label
+patches = list( )
+if ( is.na( npatches ) ) npatches = ncol( mymats[[1]]$values )
+voxes = seq( from = 1, to = ncol( mymats[[1]]$values ), by = floor(ncol( mymats[[1]]$values )/npatches ) )
+if ( randomize ) {
+  voxes = sample(  1:ncol( mymats[[1]]$values ), npatches )
+}
+if ( length( voxes ) > npatches ) voxes = voxes[ 1:npatches ]
+mydf = data.frame(  matrix( nrow = npatches, ncol = mydim + 3 ) )
+colnames( mydf ) = c( "index", "value", c("x","y","z","t")[1:mydim], 'groundTruth' )
+centervalind = floor( nrow( mymats[[1]]$values ) / 2 ) + 1
+ct = 1
+if ( !( gtIsVector ) ) locgt = groundTruth
+for ( vox in voxes ) {
+  rimgs = list( )
+  for ( myk in 1:length( mychan ) ) {
+    rimgs[[ myk ]] = makeImage( rep( radius*2 + 1, mydim ), mymats[[myk]]$values[,vox] )
+  }
+  rimg = mergeChannels( rimgs )
+  locvalue = mymats[[1]]$values[ centervalind, vox ]
+  position = mymats[[1]]$indices[vox,]
   if ( gtIsVector ) locgt = groundTruth[ vox ]
   mydf[ ct, ] = c( vox, locvalue, position, locgt )
   patches[[ ct ]] = rimg
