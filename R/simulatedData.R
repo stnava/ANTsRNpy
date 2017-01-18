@@ -45,11 +45,14 @@ simulateSphereData <- function( referenceImage,
   pts[1, ] = antsTransformIndexToPhysicalPoint( referenceImage, ctr ) + posNoise
   ptsi = makePointsImage( pts, msk, radius = baserad )
   ptsi = ptsi + makePointsImage( pts, msk, radius = plusrad )
+  if ( classByPosition ) {
+    templabs = ptsi[ msk == 1 ]
+    templabs[ 1:floor(length( templabs )/2) ] =
+      templabs[ 1:floor(length( templabs )/2) ] + max( templabs ) + 1
+    ptsi[ msk == 1 ] = templabs
+  }
   gtSeg = antsImageClone( ptsi )
   labels$labels = ptsi[ msk == 1 ]
-  if ( classByPosition &  ( pts[ 1 ] < floor( idim[1]/2 ) ) ) {
-    labels$labels = ptsi[ msk == 1 ] + max( labels$labels ) + 1
-  }
   mynoise = rnorm( sum( msk == 1 ), noiseLevel[1], noiseLevel[2] )
   mycom = getCenterOfMass( ptsi )
   ptsi[ msk == 1 ] = ptsi[ msk == 1 ] + mynoise
