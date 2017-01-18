@@ -21,7 +21,8 @@ how much the image moves randomly away from the center.}
 }
 \value{
 list containing the single channel image, the multi-channel image,
-the ground truth labels and the center of mass stored in a data frame.
+the ground truth image and the ground truth labels and the center of mass
+stored in a data frame.
 }
 \description{
 simulate 2D or 3D image geometry and segmentation data. Return the single

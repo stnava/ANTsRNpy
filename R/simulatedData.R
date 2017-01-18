@@ -10,7 +10,8 @@
 #' how much the image moves randomly away from the center.
 #' @param classByPosition boolean altering label by the sign of position change
 #' @return list containing the single channel image, the multi-channel image,
-#' the ground truth labels and the center of mass stored in a data frame.
+#' the ground truth image and the ground truth labels and the center of mass
+#' stored in a data frame.
 #' @author Avants BB
 #' @import ANTsR RcppCNPy
 #' @examples
@@ -44,6 +45,7 @@ simulateSphereData <- function( referenceImage,
   pts[1, ] = antsTransformIndexToPhysicalPoint( referenceImage, ctr ) + posNoise
   ptsi = makePointsImage( pts, msk, radius = baserad )
   ptsi = ptsi + makePointsImage( pts, msk, radius = plusrad )
+  gtSeg = antsImageClone( ptsi )
   labels$labels = ptsi[ msk == 1 ]
   if ( classByPosition &  ( pts[ 1 ] < floor( idim[1]/2 ) ) ) {
     labels$labels = ptsi[ msk == 1 ] + max( labels$labels ) + 1
@@ -52,7 +54,7 @@ simulateSphereData <- function( referenceImage,
   mycom = getCenterOfMass( ptsi )
   ptsi[ msk == 1 ] = ptsi[ msk == 1 ] + mynoise
   ptsm = mergeChannels( lappend( ptsi, spatlist ) )       # multichannel version
-  return( list( image = ptsi, mcimage = ptsm,
+  return( list( image = ptsi, mcimage = ptsm, groundTruthImage = gtSeg,
     groundTruth = labels, centerOfMass = mycom ) )
 }
 
